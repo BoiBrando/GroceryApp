@@ -41,6 +41,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
-    implementation("org.opencv:opencv:5.0.0.1")
+//    implementation("org.opencv:opencv:5.0.0.1")
 //    implementation("net.sourceforge.tess4j:tess4j:5.20.0")
 }
