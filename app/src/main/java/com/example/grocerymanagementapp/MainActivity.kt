@@ -12,7 +12,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.scale
 
+@Suppress("Deprecation")
 
 class MainActivity : AppCompatActivity() {
     private lateinit var myButtonScanReceipt: Button
@@ -27,6 +29,8 @@ class MainActivity : AppCompatActivity() {
         private const val CAMERA_PERMISSION_CODE = 1
         private const val CAMERA_REQUEST_CODE = 2
     }
+
+    private var imageSize = 224
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,10 +68,12 @@ class MainActivity : AppCompatActivity() {
                 startActivityForResult(intent, CAMERA_REQUEST_CODE)
             }
             else {
-                Toast.makeText(this, "Camera Permission Denied...",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Camera Permission Denied...", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
+
 
     // Once the button is clicked, this function opens the camera
     // and allows the user to take the photo
@@ -75,11 +81,21 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == RESULT_OK) {
             if(requestCode == CAMERA_REQUEST_CODE) {
+
                 val thumbnail: Bitmap = data!!.extras!!.get("data") as Bitmap
 
+                val cv = ComputerVision()
+
                 ivImage.setImageBitmap(thumbnail)
+
+                val image = thumbnail.scale(imageSize, imageSize, false)
+                val str = cv.classifyImage(image, imageSize, this)
+                Toast.makeText(this, str, Toast.LENGTH_LONG).show()
+
+
             }
         }
     }
+
 
 }

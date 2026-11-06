@@ -30,6 +30,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    buildFeatures {
+        mlModelBinding = true
+    }
 }
 
 dependencies {
@@ -41,6 +44,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
-//    implementation("org.opencv:opencv:5.0.0.1")
-//    implementation("net.sourceforge.tess4j:tess4j:5.20.0")
+//    implementation(libs.play.services.mlkit.barcode.scanning)
+    implementation(libs.tensorflow.lite)
+    implementation(libs.tensorflow.tensorflow.lite.support)
+    implementation(libs.tensorflow.tensorflow.lite.metadata)
 }
