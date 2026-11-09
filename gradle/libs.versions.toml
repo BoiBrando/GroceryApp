@@ -11,6 +11,7 @@ constraintlayout = "2.1.4"
 tensorflowLite = "2.17.0"
 tensorflowLiteSupport = "0.5.0"
 tensorflowLiteMetadata = "0.5.0"
+ksp = "2.3.9"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -27,4 +28,6 @@ tensorflow-tensorflow-lite-metadata = { module = "org.tensorflow:tensorflow-lite
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
 

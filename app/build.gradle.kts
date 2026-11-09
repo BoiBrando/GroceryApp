@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -48,4 +49,6 @@ dependencies {
     implementation(libs.tensorflow.lite)
     implementation(libs.tensorflow.tensorflow.lite.support)
     implementation(libs.tensorflow.tensorflow.lite.metadata)
+    implementation("androidx.room3:room3-runtime:3.0.3")
+    ksp("androidx.room3:room3-compiler:3.0.3")
 }
