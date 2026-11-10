@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.scale
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import com.example.grocerymanagementapp.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
 
@@ -39,7 +41,13 @@ class MainActivity : AppCompatActivity() {
 
     private var imageSize = 224
 
+    private lateinit var masterDatabase: MasterInventory
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        masterDatabase = MasterInventory.getDatabase(this)
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -75,6 +83,16 @@ class MainActivity : AppCompatActivity() {
             else {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
             }
+        }
+
+        // Test listener for myButtonTakePicture
+        myButtonTakePicture.setOnClickListener {
+            val thingy = GroceryItem(1, "Apple", 2.0, "12/31/2026")
+            lifecycleScope.launch {
+                masterDatabase.dao.insert(thingy)
+            }
+            Toast.makeText(this, thingy.ItemName, Toast.LENGTH_LONG).show()
+
         }
 
     }
@@ -124,6 +142,12 @@ class MainActivity : AppCompatActivity() {
 
                 val image = thumbnail.scale(imageSize, imageSize, false)
                 val str = cv.classifyImage(image, imageSize, this)
+
+                val thingy = GroceryItem(2, str, 1.0, "12/31/2026")
+                lifecycleScope.launch {
+                    masterDatabase.dao.insert(thingy)
+                }
+
                 Toast.makeText(this, str, Toast.LENGTH_LONG).show()
 
 

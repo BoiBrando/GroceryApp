@@ -52,7 +52,6 @@ dependencies {
     implementation(libs.tensorflow.lite)
     implementation(libs.tensorflow.tensorflow.lite.support)
     implementation(libs.tensorflow.tensorflow.lite.metadata)
-    implementation("androidx.room:room-runtime:2.8.0")
-    implementation("androidx.room:room-ktx:2.8.0")
-    ksp("androidx.room:room-compiler:2.8.0")
+    implementation("androidx.room3:room3-runtime:3.0.3")
+    ksp("androidx.room3:room3-compiler:3.0.3")
 }
