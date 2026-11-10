@@ -1,3 +1,4 @@
+/*
 package com.example.grocerymanagementapp
 
 import androidx.room3.Dao
@@ -13,3 +14,4 @@ interface UserDAO {
 
 
 }
+*/

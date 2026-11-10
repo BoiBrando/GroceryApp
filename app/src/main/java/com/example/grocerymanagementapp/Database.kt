@@ -1,3 +1,4 @@
+/*
 package com.example.grocerymanagementapp
 
 import androidx.room3.Database
@@ -13,3 +14,4 @@ import androidx.room3.RoomDatabase
 abstract class Database: RoomDatabase() {
     abstract val dao: UserDAO
 }
+*/

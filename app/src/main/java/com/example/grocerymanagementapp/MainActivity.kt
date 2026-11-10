@@ -9,10 +9,13 @@ import android.provider.MediaStore
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.scale
+import com.example.grocerymanagementapp.databinding.ActivityMainBinding
+import com.google.firebase.auth.FirebaseAuth
 
 @Suppress("Deprecation")
 
@@ -20,6 +23,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var myButtonScanReceipt: Button
     private lateinit var myButtonTakePicture: Button
     private lateinit var myTextViewWelcome: TextView
+
+    private lateinit var binding: ActivityMainBinding
+
+    private lateinit var auth: FirebaseAuth
 
     // iv_image is the variable of the shown image
     private lateinit var ivImage : androidx.appcompat.widget.AppCompatImageView
@@ -34,7 +41,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        enableEdgeToEdge()
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        auth = FirebaseAuth.getInstance()
 
         myButtonScanReceipt = findViewById(R.id.myButtonScanReceipt)
         myButtonTakePicture = findViewById(R.id.myButtonTakePicture)
@@ -45,6 +56,15 @@ class MainActivity : AppCompatActivity() {
         myTextViewWelcome.text = getString(R.string.text_view_text)
 
         ivImage = findViewById(R.id.iv_image)
+
+        binding.myButtonLogout.setOnClickListener {
+            auth.signOut()
+            Toast.makeText(this, "Logout Successful", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, LoginActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            startActivity(intent)
+        }
 
         // Listener for myButtonScanReceipt
         myButtonScanReceipt.setOnClickListener {
@@ -59,6 +79,20 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        if (auth.currentUser == null) {
+            val intent = Intent(
+                this,
+                LoginActivity::class.java
+            ).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            startActivity(intent)
+            finish()
+        }
+    }
     // Setting the camera permissions for the app
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
