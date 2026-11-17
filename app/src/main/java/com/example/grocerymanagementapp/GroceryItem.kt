@@ -11,4 +11,5 @@ data class GroceryItem(
     var ItemName: String,
     var Quantity: Double,
     var ExpirationDate: String,
+    var FoodType: String
 )

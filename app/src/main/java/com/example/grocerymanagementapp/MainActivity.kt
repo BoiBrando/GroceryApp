@@ -4,8 +4,10 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.nfc.Tag
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -18,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import com.example.grocerymanagementapp.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Dispatchers
 
 @Suppress("Deprecation")
 
@@ -42,11 +45,13 @@ class MainActivity : AppCompatActivity() {
     private var imageSize = 224
 
     private lateinit var masterDatabase: MasterInventory
+    private lateinit var personalDatabase: PersonalDatabase
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         masterDatabase = MasterInventory.getDatabase(this)
+        personalDatabase = PersonalDatabase.getDatabase(this)
 
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -59,8 +64,8 @@ class MainActivity : AppCompatActivity() {
         myButtonTakePicture = findViewById(R.id.myButtonTakePicture)
         myTextViewWelcome = findViewById(R.id.myTextViewWelcome)
 
-        myButtonScanReceipt.text = getString(R.string.button_text_scan_receipt)
-        myButtonTakePicture.text = getString(R.string.button_text_take_picture)
+        myButtonScanReceipt.text = getString(R.string.button_text_scan_object)
+        myButtonTakePicture.text = getString(R.string.button_text_refresh_database)
         myTextViewWelcome.text = getString(R.string.text_view_text)
 
         ivImage = findViewById(R.id.iv_image)
@@ -87,11 +92,10 @@ class MainActivity : AppCompatActivity() {
 
         // Test listener for myButtonTakePicture
         myButtonTakePicture.setOnClickListener {
-            val thingy = GroceryItem(1, "Apple", 2.0, "12/31/2026")
-            lifecycleScope.launch {
-                masterDatabase.dao.insert(thingy)
+            lifecycleScope.launch(Dispatchers.IO) {
+                val stringyThingy = masterDatabase.dao.getGroceryItems()
+                val stringyThingy2 = personalDatabase.dao.getGroceryItems()
             }
-            Toast.makeText(this, thingy.ItemName, Toast.LENGTH_LONG).show()
 
         }
 
@@ -111,6 +115,7 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
     }
+
     // Setting the camera permissions for the app
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -124,7 +129,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
 
 
     // Once the button is clicked, this function opens the camera
@@ -143,12 +147,23 @@ class MainActivity : AppCompatActivity() {
                 val image = thumbnail.scale(imageSize, imageSize, false)
                 val str = cv.classifyImage(image, imageSize, this)
 
-                val thingy = GroceryItem(2, str, 1.0, "12/31/2026")
-                lifecycleScope.launch {
-                    masterDatabase.dao.insert(thingy)
+                // Check if the items that's about to be
+                // added already exists in personal DB
+                lifecycleScope.launch(Dispatchers.IO) {
+                    var toAdd = masterDatabase.dao.getGroceryItemFromName(str)
+
+                    toAdd.Quantity = 1.0
+
+                    if(personalDatabase.dao.checkIfItemExists(toAdd.ItemID)) {
+                            personalDatabase.dao.updateItemQuantity(
+                                personalDatabase.dao.getGroceryItem(toAdd.ItemID).Quantity)
+                    }
+                    else {
+                        personalDatabase.dao.insert(toAdd)
+                    }
                 }
 
-                Toast.makeText(this, str, Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "$str added to database!", Toast.LENGTH_LONG).show()
 
 
             }

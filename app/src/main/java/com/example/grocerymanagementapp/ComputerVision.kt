@@ -57,7 +57,10 @@ class ComputerVision {
             }
         }
 
-        val classes = arrayOf<String>("Apple", "Orange")
+        // *************************************
+        //  MUST FIX VARIABLE CLASSES AND NAMES
+        // *************************************
+        val classes = arrayOf<String>("Apple", "Orange", "Banana", "Cherry", "Watermelon")
 
         // Releases model resources if no longer used.
         model.close()
