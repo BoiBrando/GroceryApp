@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Grocery Management App</string>
     <string name="text_view_text">Welcome to the Grocery Management App</string>
-    <string name="button_text_scan_receipt">Scan Receipt</string>
-    <string name="button_text_take_picture">Take Picture</string>
+    <string name="button_text_scan_object">Scan Object</string>
+    <string name="button_text_refresh_database">Refresh Database</string>
+    <string name="button_text_sign_out">Sign Out</string>
 </resources>
