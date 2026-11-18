@@ -51,6 +51,10 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)
         }
+        binding.move2.setOnClickListener {
+            val intent = Intent(this, ForgetPasswordActivity::class.java)
+            startActivity(intent)
+        }
     }
     public override fun onStart() {
         super.onStart()
