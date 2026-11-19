@@ -79,6 +79,14 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.deleteAccountButton.setOnClickListener {
+            Toast.makeText(this, "Preparing to Delete Account", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, DeleteAccountActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            startActivity(intent)
+        }
+
         // Listener for myButtonScanReceipt
         myButtonScanReceipt.setOnClickListener {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
@@ -91,10 +99,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Test listener for myButtonTakePicture
+        // Made more changes to this chunk of code on 11/17/2026
         myButtonTakePicture.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
-                val stringyThingy = masterDatabase.dao.getGroceryItems()
-                val stringyThingy2 = personalDatabase.dao.getGroceryItems()
+                val uid = auth.currentUser!!.uid
+                val masterItems = masterDatabase.dao.getGroceryItems()
+                val personalItems = personalDatabase.dao.getGroceryItems()
+                Log.d("MASTER_DB", masterItems.toString())
+                Log.d("PERSONAL_DB", personalItems.toString())
             }
 
         }
@@ -149,17 +161,29 @@ class MainActivity : AppCompatActivity() {
 
                 // Check if the items that's about to be
                 // added already exists in personal DB
+                // Made more changes so that individual users can have their own separate
+                // databases based off of their userid
                 lifecycleScope.launch(Dispatchers.IO) {
+                    val uid = auth.currentUser!!.uid
                     var toAdd = masterDatabase.dao.getGroceryItemFromName(str)
-
                     toAdd.Quantity = 1.0
 
-                    if(personalDatabase.dao.checkIfItemExists(toAdd.ItemID)) {
+                    if(personalDatabase.dao.checkIfItemExists(toAdd.ItemName,uid)) {
                             personalDatabase.dao.updateItemQuantity(
-                                personalDatabase.dao.getGroceryItem(toAdd.ItemID).Quantity)
+                                toAdd.ItemName,
+                                uid,
+                                1.0)
                     }
                     else {
-                        personalDatabase.dao.insert(toAdd)
+                        val personalItem = GroceryItem(
+                            itemId =  toAdd.itemId,
+                            ItemName = toAdd.ItemName,
+                            Quantity = 1.0,
+                            ExpirationDate = toAdd.ExpirationDate,
+                            FoodType = toAdd.FoodType,
+                            userId = uid
+                        )
+                        personalDatabase.dao.insert(personalItem)
                     }
                 }
 
