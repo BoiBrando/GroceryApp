@@ -7,7 +7,7 @@ import androidx.room3.RoomDatabase
 
 @Database(
     version = 2,
-    entities = [GroceryItem :: class],
+    entities = [MasterGroceryItem :: class],
     exportSchema = false
 )
 
@@ -23,7 +23,9 @@ abstract class MasterInventory: RoomDatabase() {
                     context.applicationContext,
                     MasterInventory::class.java,
                     "MasterInventory"
-                ).build()
+                ).createFromAsset("database/masterDatabase.db")
+                    .fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = masterDatabase
                 return masterDatabase
             }

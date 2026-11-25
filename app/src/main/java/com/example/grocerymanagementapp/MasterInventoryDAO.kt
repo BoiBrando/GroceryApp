@@ -5,14 +5,14 @@ import androidx.room3.Query
 
 @Dao
 interface MasterInventoryDAO {
-    @Query("SELECT * FROM GroceryItem")
-    fun getGroceryItems(): List<GroceryItem>
+    @Query("SELECT * FROM MasterGroceryItem")
+    fun getMasterGroceryItems(): List<MasterGroceryItem>
 
-    @Query("SELECT * FROM GroceryItem WHERE ItemID = :id")
-    fun getGroceryItem(id: Int): GroceryItem
+    @Query("SELECT * FROM MasterGroceryItem WHERE itemID = :id")
+    fun getMasterGroceryItem(id: Int): MasterGroceryItem
 
-    @Query("SELECT * FROM GroceryItem WHERE ItemName = :name")
-    fun getGroceryItemFromName(name: String): GroceryItem
+    @Query("SELECT * FROM MasterGroceryItem WHERE itemName = :name")
+    fun getMasterGroceryItemFromName(name: String): MasterGroceryItem
 
 
 }

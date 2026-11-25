@@ -9,11 +9,9 @@ data class GroceryItem(
 //  Items can have the same itemID, but will not cause an error since they will have
 //  different localID values
     var itemId: Int,
-//    var InventoryID: String,
-//    var CategoryID: String,
-    var ItemName: String,
-    var Quantity: Double,
-    var ExpirationDate: String,
-    var FoodType: String,
+    var itemName: String,
+    var quantity: Double,
+    var expirationDate: String,
+    var foodType: String,
     val userId: String
 )

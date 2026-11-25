@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.nfc.Tag
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -102,8 +101,9 @@ class MainActivity : AppCompatActivity() {
         // Made more changes to this chunk of code on 11/17/2026
         myButtonTakePicture.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
-                val uid = auth.currentUser!!.uid
-                val masterItems = masterDatabase.dao.getGroceryItems()
+                // Claimed it "wasn't used", so I commented it out
+//                val uid = auth.currentUser!!.uid
+                val masterItems = masterDatabase.dao.getMasterGroceryItems()
                 val personalItems = personalDatabase.dao.getGroceryItems()
                 Log.d("MASTER_DB", masterItems.toString())
                 Log.d("PERSONAL_DB", personalItems.toString())
@@ -154,7 +154,9 @@ class MainActivity : AppCompatActivity() {
 
                 val cv = ComputerVision()
 
-                ivImage.setImageBitmap(thumbnail)
+                // All this does it put the just-taken
+                // photo on the user's screen
+//              ivImage.setImageBitmap(thumbnail)
 
                 val image = thumbnail.scale(imageSize, imageSize, false)
                 val str = cv.classifyImage(image, imageSize, this)
@@ -165,22 +167,22 @@ class MainActivity : AppCompatActivity() {
                 // databases based off of their userid
                 lifecycleScope.launch(Dispatchers.IO) {
                     val uid = auth.currentUser!!.uid
-                    var toAdd = masterDatabase.dao.getGroceryItemFromName(str)
-                    toAdd.Quantity = 1.0
+                    val toAdd = masterDatabase.dao.getMasterGroceryItemFromName(str)
+                    toAdd.quantity = 1.0
 
-                    if(personalDatabase.dao.checkIfItemExists(toAdd.ItemName,uid)) {
+                    if(personalDatabase.dao.checkIfItemExists(toAdd.itemName,uid)) {
                             personalDatabase.dao.updateItemQuantity(
-                                toAdd.ItemName,
+                                toAdd.itemName,
                                 uid,
                                 1.0)
                     }
                     else {
                         val personalItem = GroceryItem(
-                            itemId =  toAdd.itemId,
-                            ItemName = toAdd.ItemName,
-                            Quantity = 1.0,
-                            ExpirationDate = toAdd.ExpirationDate,
-                            FoodType = toAdd.FoodType,
+                            itemId =  toAdd.itemID,
+                            itemName = toAdd.itemName,
+                            quantity = 1.0,
+                            expirationDate = toAdd.expirationDate,
+                            foodType = toAdd.foodType,
                             userId = uid
                         )
                         personalDatabase.dao.insert(personalItem)

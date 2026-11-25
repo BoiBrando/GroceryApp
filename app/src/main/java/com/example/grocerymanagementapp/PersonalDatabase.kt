@@ -6,7 +6,7 @@ import androidx.room3.Room
 import androidx.room3.RoomDatabase
 
 @Database(
-    version = 1,
+    version = 2,
     entities = [GroceryItem :: class],
     exportSchema = false
 )
@@ -23,7 +23,8 @@ abstract class PersonalDatabase: RoomDatabase() {
                     context.applicationContext,
                     PersonalDatabase::class.java,
                     "PersonalDatabase"
-                ).build()
+                )
+                    .build()
                 INSTANCE = personalDatabase
                 return personalDatabase
             }
